@@ -1,3 +1,5 @@
+## Simülatörün tanıtım videosu:
+-->https://youtu.be/v4m2PiVFB7Q?si=gatOMj-dQB9yKGOr
 ## Hamming Hata Düzeltme Kodu Simülatörü
 Bu proje kapsamında HTML , CSS ve JavaScript kullanarak Hamming Kodu Simülatörü sunan bir basit web sitesi geliştirdim. Hamming kodları, verilerdeki hataları tespit etmek ve düzeltmek için kullanılan önemli bir hata düzeltme mekanizmasıdır. Bu simülatör, kullanıcıdan aldığı 4, 8 veya 16 bitlik veriler üzerinde Hamming kodu hesaplar, hataları yapay olarak oluşturur ve düzeltir.
 
