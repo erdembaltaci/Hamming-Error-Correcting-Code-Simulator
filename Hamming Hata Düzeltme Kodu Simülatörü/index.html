@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/avif" href="LOGO.avif">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamming Hata Düzeltme Kodu Simülatörü</title>
+    <style>
+        /* Genel stil ayarları */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f2f2f2;
+            margin: 20px 0;
+            padding: 0;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 700px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        /* Veri girişi için input alanı stili */
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #70ab72;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        /* Buton grubu stili */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .button-group button {
+            flex: 1;
+            margin: 0 5px;
+        }
+        /* Genel buton stili */
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            outline: none;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        /* Çıktı kutusu stili */
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+        .output h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .output p {
+            margin-bottom: 5px;
+        }
+        /* Hata butonu stili */
+        .error-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        /* Etiket stili */
+        label {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+        /* Kod ve çıktıların gösterildiği pre tag stili */
+        pre {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #eee;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        /* Bit kutuları için kapsayıcı stil */
+        .bit-box-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        /* Bit kutusu stili */
+        .bit-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            margin: 3px;
+            padding: 2px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            width: 40px;
+            height: 60px;
+            box-sizing: border-box;
+        }
+        .bit-box .index-number {
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .bit-box .bit {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        /* Parite bitleri için stil */
+        .bit-box.parity {
+            background-color: #ffcccc;
+        }
+        /* Hatalı bitler için stil */
+        .bit-box.error {
+            background-color: #cce5ff;
+        }
+        /* Hata mesajı stili */
+        .error-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            color: rgb(12, 12, 12);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #4CAF50;">Hamming Hata Düzeltme Kodu Simülatörü</h2>
+        <!-- Hata mesajı bölümü -->
+        <div class="error-message" id="errorMessage">
+            <p>Lütfen sadece ikili veri (0 ve 1) giriniz!</p>
+            <button onclick="closeErrorMessage()">Tamam</button>
+        </div>
+        <!-- Veri girişi -->
+        <div>
+            <label for="dataInput">Veri Girin (0 ve 1 içeren):</label><br>
+            <input type="text" id="dataInput" name="dataInput"><br><br>
+        </div>
+        <!-- Veri uzunluğu seçenekleri -->
+        <div class="button-group">
+            <button onclick="setRandomData(4)" class="button-animation">4 Bit Veri Oluştur</button>
+            <button onclick="setRandomData(8)" class="button-animation">8 Bit Veri Oluştur</button>
+            <button onclick="setRandomData(16)" class="button-animation">16 Bit Veri Oluştur</button>
+        </div>
+        <!-- Kodlama butonu -->
+        <div>
+            <button onclick="encodeData()" class="button-animation">Hamming Kodunu Hesapla</button>
+        </div>
+        <!-- Kodlama çıktısı -->
+        <div class="output">
+            <h3>Hamming Kod:</h3>
+            <div id="output" class="bit-box-container"></div>
+            <div id="address"></div>
+        </div>
+        <!-- Hata oluşturma butonu -->
+        <div class="error-button">
+            <button onclick="introduceError()" class="button-animation" style="background-color: #f44336;">Yapay Hata Oluştur</button>
+        </div>
+        <!-- Hata gösterimi -->
+        <div class="output">
+            <h3>Yapay Hata Oluşturulmuş Kod:</h3>
+            <div id="error" class="bit-box-container"></div>
+        </div>
+        <!-- Düzeltme gösterimi -->
+        <div class="output">
+            <h3>Yapay Hatanın Düzeltilmiş Hali:</h3>
+            <div id="correction" class="bit-box-container"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript kodu -->
+    <script>
+        // Veri uzunluğunu kontrol eden fonksiyon
+        function validateDataLength(data) {
+            var validLengths = [4, 8, 16];
+            return validLengths.includes(data.length);
+        }
+
+        // Hamming kodlaması yapmak için kullanılan fonksiyon
+        function hamming_encode(data) {
+            var n = data.length;
+            var m = 0;
+            // Parite bitlerinin sayısını hesapla
+            while (Math.pow(2, m) < n + m + 1) {
+                m++;
+            }
+            var code = Array(n + m).fill(0);
+            var j = 0;
+            // Veriyi ve parite bitlerini kod dizisine yerleştir
+            for (var i = 1; i <= n + m; i++) {
+                if ((i & (i - 1)) === 0) {
+                    continue;
+                }
+                code[i - 1] = parseInt(data[j]);
+                j++;
+            }
+            // Parite bitlerini hesapla
+            for (var i = 0; i < m; i++) {
+                var parity = 0;
+                for (var j = 1; j <= n + m; j++) {
+                    if ((j & (1 << i)) !== 0) {
+                        parity ^= code[j - 1];
+                    }
+                }
+                code[Math.pow(2, i) - 1] = parity;
+            }
+            return { code: code.join(''), addresses: Array.from({ length: m }, (_, i) => Math.pow(2, i) - 1) };
+        }
+
+        // Rastgele bir hata oluşturan fonksiyon
+        function introduce_error(code) {
+            var error_index = Math.floor(Math.random() * code.length);
+            var error_code = code.split('');
+            error_code[error_index] = error_code[error_index] === '0' ? '1' : '0';
+            return { code: error_code.join(''), index: error_index };
+        }
+
+        // Hamming kodunu çözerek hata konumunu belirleyen fonksiyon
+        function hamming_decode(code) {
+            var n = code.length;
+            var m = Math.floor(Math.log2(n)) + 1;
+            var parity = Array(m).fill(0);
+            // Hata konumunu belirlemek için parite bitlerini kontrol et
+            for (var i = 0; i < m; i++) {
+                for (var j = 1; j <= n; j++) {
+                    if ((j & (1 << i)) !== 0) {
+                        parity[i] ^= parseInt(code[j - 1]);
+                    }
+                }
+            }
+            var error_position = parity.reduce((acc, bit, i) => acc + (bit * Math.pow(2, i)), 0);
+            return error_position - 1;  
+        }
+
+        // Hata düzeltme işlemi için kullanılan fonksiyon
+        function correct_error(code, error_position) {
+            if (error_position >= 0 && error_position < code.length) {
+                code = code.substring(0, error_position) + (code[error_position] === '0' ? '1' : '0') + code.substring(error_position + 1);
+            }
+
+            var correctedCode = "";
+            // Kodun düzeltilmiş halini oluştur ve parite bitlerini işaretle
+            for (var i = 0; i < code.length; i++) {
+                if ((i & (i + 1)) === 0) { // Parite bitlerini kontrol et
+                    correctedCode += "<div class='bit-box parity'><span class='index-number'>" + (i + 1) + "</span><span class='bit'>" + code[i] + "</span></div>";
+                } else {
+                    correctedCode += "<div class='bit-box'><span class='index-number'>" + (i + 1) + "</span><span class='bit'>" + code[i] + "</span></div>";
+                }
+            }
+
+            return correctedCode;
+        }
+
+        // Veri girişi alınarak kodlanan veriyi ekranda gösteren fonksiyon
+        function encodeData() {
+            var data = document.getElementById("dataInput").value;
+            var outputDiv = document.getElementById("output");
+            var addressDiv = document.getElementById("address");
+
+            // Girilen verinin sadece 0 ve 1 içermesini kontrol eder
+            if (!/^[01]+$/.test(data)) {
+                showErrorMessage("Lütfen sadece ikili veri (0 ve 1) giriniz!");
+                return;
+            }
+
+            // Veri uzunluğunu kontrol eder
+            if (!validateDataLength(data)) {
+                showErrorMessage("Lütfen 4, 8 veya 16 bit uzunluğunda veri giriniz!");
+                return;
+            }
+
+            var result = hamming_encode(data);
+            var hammingCode = result.code;
+            var addresses = result.addresses.join(" ");
+
+            var bitBoxes = "";
+            // Hamming kodunu ve parite bitlerini ekranda göster
+            for (var i = 0; i < hammingCode.length; i++) {
+                if (result.addresses.includes(i)) {
+                    bitBoxes += "<div class='bit-box parity'><span class='index-number'>" + (i + 1) + "</span><span class='bit'>" + hammingCode[i] + "</span></div>";
+                } else {
+                    bitBoxes += "<div class='bit-box'><span class='index-number'>" + (i + 1) + "</span><span class='bit'>" + hammingCode[i] + "</span></div>";
+                }
+            }
+
+            outputDiv.innerHTML = bitBoxes;
+            addressDiv.innerHTML = "<p>Parity Bitlerinin Bulundukları  İndis Numaraları: " + addresses + "</p>";
+        }
+
+        // Rastgele bir hata ekleyip, hata ve düzeltilmiş veriyi gösteren fonksiyon
+        function introduceError() {
+            var outputDiv = document.getElementById("output");
+            var errorDiv = document.getElementById("error");
+            var correctionDiv = document.getElementById("correction");
+
+            var bitElements = outputDiv.getElementsByClassName('bit');
+            var code = Array.from(bitElements).map(el => el.innerText).join('');
+            var result = introduce_error(code);
+
+            var bitBoxes = "";
+            // Hatalı kodu ekranda göster
+            for (var i = 0; i < result.code.length; i++) {
+                if (i === result.index) {
+                    bitBoxes += "<div class='bit-box error'><span class='index-number'>" + (i + 1) + "</span><span class='bit'>" + result.code[i] + "</span></div>";
+                } else {
+                    bitBoxes += "<div class='bit-box'><span class='index-number'>" + (i + 1) + "</span><span class='bit'>" + result.code[i] + "</span></div>";
+                }
+            }
+            errorDiv.innerHTML = bitBoxes;
+
+            var error_position = hamming_decode(result.code);
+            var corrected_code = correct_error(result.code, error_position);
+            correctionDiv.innerHTML = corrected_code;
+        }
+
+        // Rastgele veri oluşturan fonksiyon
+        function setRandomData(length) {
+            var randomData = Array.from({ length: length }, () => Math.round(Math.random())).join('');
+            document.getElementById("dataInput").value = randomData;
+        }
+
+        // Hata mesajını gösteren fonksiyon
+        function showErrorMessage(message) {
+            var errorMessageDiv = document.getElementById("errorMessage");
+            errorMessageDiv.querySelector("p").textContent = message;
+            errorMessageDiv.style.display = 'block';
+        }
+
+        // Hata mesajını kapatan fonksiyon
+        function closeErrorMessage() {
+            document.getElementById("errorMessage").style.display = 'none';
+        }
+    </script>
+</body>
+</html>
