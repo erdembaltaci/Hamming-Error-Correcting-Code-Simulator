@@ -4,7 +4,7 @@ Bu simülatörü Bilgisayar Mimarisi dersi proje ödevi kapsamında HTML , CSS v
 Hamming Hata Düzeltme Kodu Simülatörü
 Bu proje, HTML , CSS ve JavaScript kullanarak Hamming Kodu Simülatörü oluşturur. Hamming kodları, verilerdeki hataları tespit etmek ve düzeltmek için kullanılan önemli bir hata düzeltme mekanizmasıdır. Bu simülatör, kullanıcıdan aldığı 4, 8 veya 16 bitlik veriler üzerinde Hamming kodu hesaplar, hataları yapay olarak oluşturur ve düzeltir.
 
-Özellikler
+##Özellikler
 Hamming Kodu Hesaplama: Kullanıcı tarafından girilen 4, 8 veya 16 bitlik veriler üzerinde Hamming kodunu hesaplar.
 
 Hata Oluşturma ve Düzeltme: Hamming koduna yapay olarak rastgele bir hata ekler ve bu hatayı tespit edip düzeltir.
