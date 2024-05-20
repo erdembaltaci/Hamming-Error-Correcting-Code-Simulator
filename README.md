@@ -6,7 +6,9 @@ Bu proje, HTML , CSS ve JavaScript kullanarak Hamming Kodu Simülatörü oluştu
 
 Özellikler
 Hamming Kodu Hesaplama: Kullanıcı tarafından girilen 4, 8 veya 16 bitlik veriler üzerinde Hamming kodunu hesaplar.
+
 Hata Oluşturma ve Düzeltme: Hamming koduna yapay olarak rastgele bir hata ekler ve bu hatayı tespit edip düzeltir.
+
 Kullanıcı Dostu Arayüz: HTML ve CSS kullanarak kolay kullanımlı bir grafiksel kullanıcı arayüzü sağlar.
 
 Gereksinimler
